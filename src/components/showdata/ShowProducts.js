@@ -8,117 +8,94 @@ import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 
 export default class ShowProducts extends Component {
-constructor(props){
-    super(props)
-    this.state = {
-        indicator:false,
-        data:{},
-        open:false,
-        products: []
-      };
+    constructor(props) {
+        super(props)
+        this.state = {
+            indicator: false,
+            data: {},
+            open: false,
+            products: []
+        };
 
-    //   this.handleClose = this.handleClose.bind(this);
-    //     this.cancelhandleClose = this.cancelhandleClose.bind(this);
-        
-        
+        this.handleClose = this
+            .handleClose
+            .bind(this);
+        this.cancelhandleClose = this
+            .cancelhandleClose
+            .bind(this);
+
     }
-      
-      componentDidMount() {
 
-        db.collection("todos").get().then((querySnapshot) => {
-            let arr = [];
-            querySnapshot.forEach((doc) => {
-    
-                let obj = {
-                    id:doc.id,
-                    ...doc.data()
-                }
-                arr.push(obj)
+    componentDidMount() {
+
+        db
+            .collection("todos")
+            .get()
+            .then((querySnapshot) => {
+                let arr = [];
+                querySnapshot.forEach((doc) => {
+
+                    let obj = {
+                        id: doc.id,
+                        ...doc.data()
+                    }
+                    arr.push(obj)
+                });
+                console.log(arr);
+                this.setState({products: arr})
+                //delete
+                console.log('=================brd===================');
+                console.log(arr);
+                console.log('====================================');
+                
+                db.collection("todos").doc(`${arr[0].id}`).delete().then(()=>{
+                    console.log('=================snapshot===================');
+                 
+                    console.log('====================================');
+                })
             });
-            console.log(arr);
-            this.setState({products:arr})
-          
-        });
-        
+
     }
 
-    // removeall(event) {
-    //     if(window.confirm("Are you really want to remove all products")){
-    //     firebase.database().ref('products').remove()
-    //     .then(function(success) {
-    //       toastr.success('products has been deleted!')
-    //     }).catch(function (err) {
-    //       toastr.error('Error has been occur! try again later .', 'Inconceivable!')
-  
-    //     })
-    // }} 
+    removeall(event) {
+        if (window.confirm("Are you really want to remove all products")) {}
+    }
 
-    // deleteHandler(id){
-    //     if(window.confirm("Are you sure to delete item?")){
-    //   firebase.database().ref('products/'+id).remove()
-    //   .then(function(success) {
-    //     toastr.success('item has been deleted!')
-    //   }).catch(function (err) {
-    //     toastr.error('Error has been occur! try again later .', 'Inconceivable!')
+    deleteHandler(id) {
+        if (window.confirm("Are you sure to delete item?")) {}
 
-    //   })
-    // }
+    }
 
-    // }
+    editHandler(data) {
+        this.setState({data, open: true})
 
-    // editHandler(data){
-    //     this.setState({
-    //         data,
-    //         open:true
-    //     })
-        
-    //    }
+    }
 
+    handleClose()
+    {}
 
-    //   handleClose()
-    //   {
-             
-    //          firebase.database().ref('products/'+this.state.data.id).update({
-    //             p_id:this.refs.p_id.value,
-    //             name:this.refs.p_name.value,
-    //             price:this.refs.p_price.value
-    //     })
-    //     .then(function(success) {
-    //       toastr.success('item has been updated!')
-    //     }).catch(function (err) {
-    //       toastr.error('Error has been occur! try again later .', 'Inconceivable!')
-  
-    //     })
-    //     this.setState({
-    //         open:false
-    //     })
-    //   }
-
-
-       cancelhandleClose() {
+    cancelhandleClose() {
         this.setState({open: false});
     }
 
     render() {
-        console.log('====================================');
-        console.log(this.state.data);
-        console.log('====================================');
+ 
 
         const actions = [ < FlatButton label = "Cancel" primary = {
-            true
-        }
-        onClick = {
-            this.cancelhandleClose
-        } />, < FlatButton label = "Submit" primary = {
-            true
-        }
-        keyboardFocused = {
-            true
-        }
-        onClick = {
-            this.handleClose
-        } />
-    ];
+                true
+            }
+            onClick = {
+                this.cancelhandleClose
+            } />, < FlatButton label = "Submit" primary = {
+                true
+            }
+            keyboardFocused = {
+                true
+            }
+            onClick = {
+                this.handleClose
+            } />
+        ];
         return (
             <div>
 
@@ -128,63 +105,76 @@ constructor(props){
                     modal={false}
                     open={this.state.open}
                     onRequestClose={this.handleClose}>
-                   
-                   <div className="row">
 
-<div className="input-field col s12">
+                    <div className="row">
 
-    <input id="email" value={this.state.data.p_id} type="text" className="validate" ref="p_id" required/>
+                        <div className="input-field col s12">
 
-    
-    <span className="helper-text" data-error="wrong" data-success="right">e.g 14ghd</span>
-</div>
-<div className="input-field col s12">
+                            <input
+                                id="email"
+                                value={this.state.data.p_id}
+                                type="text"
+                                className="validate"
+                                ref="p_id"
+                                required/>
 
-    <input defaultValue={this.state.data.name}  id="email" type="text" className="validate" ref="p_name" required/>
+                            <span className="helper-text" data-error="wrong" data-success="right">e.g 14ghd</span>
+                        </div>
+                        <div className="input-field col s12">
 
-   
-    <span className="helper-text" data-error="wrong" data-success="right">e.g mobile phone</span>
-</div>
+                            <input
+                                defaultValue={this.state.data.name}
+                                id="email"
+                                type="text"
+                                className="validate"
+                                ref="p_name"
+                                required/>
 
-<div className="input-field col s12">
+                            <span className="helper-text" data-error="wrong" data-success="right">e.g mobile phone</span>
+                        </div>
 
-    <input defaultValue={this.state.data.price} id="email" type="number" className="validate" ref="p_price" required/>
+                        <div className="input-field col s12">
 
-    
-    <span className="helper-text" data-error="wrong" data-success="right">e.g 15000 Rs</span>
-</div>
+                            <input
+                                defaultValue={this.state.data.price}
+                                id="email"
+                                type="number"
+                                className="validate"
+                                ref="p_price"
+                                required/>
 
+                            <span className="helper-text" data-error="wrong" data-success="right">e.g 15000 Rs</span>
+                        </div>
 
-</div>
+                    </div>
 
                 </Dialog>
 
                 <h1>Products:</h1>
-                {this.state.indicator ? <div className=".center-align"> 
-                    <CircularProgress size={160} thickness={10} /></div> :
-                    <div>
-                <table className="responsive-table highlight">
-                    <tbody>
-                        <tr>
-                            <th>Product ID:</th>
-                            <th>Product Name:</th>
-                            <th>Product Price:</th>
-                            <th>
-                                <button className="btn btn-danger" onClick={this.removeall}>RemoveAll:</button>
-                            </th>
-                        </tr>
-                  
-                        
-                       
+                {this.state.products.length <= 0
+                    ? <div className=".center-align">
+                            <CircularProgress size={160} thickness={10}/></div>
+                    : <div>
+                        <table className="responsive-table highlight">
+                            <tbody>
+                                <tr>
+                                    <th>Product ID:</th>
+                                    <th>Product Name:</th>
+                                    <th>Product Price:</th>
+                                    <th>
+                                        <button className="btn btn-danger" onClick={this.removeall}>RemoveAll:</button>
+                                    </th>
+                                </tr>
+
+                                {/*
                         {this
                             .state
                             .products
-                            .map((products, i) => <Showresult key={i} remove={this.deleteHandler} edit={this.editHandler.bind(this)} data={products}/>)}
-                            
-                        
-                    </tbody>
-                </table>
-                </div>}
+                            .map((products, i) => <Showresult key={i}  data={products}/>)} */}
+
+                            </tbody>
+                        </table>
+                    </div>}
             </div>
         )
     }
